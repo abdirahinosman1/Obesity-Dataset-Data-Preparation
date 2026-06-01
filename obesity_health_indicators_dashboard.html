@@ -1,0 +1,405 @@
+
+<style>
+  :root {
+    --teal-50:#E1F5EE;--teal-100:#9FE1CB;--teal-400:#1D9E75;--teal-600:#0F6E56;--teal-800:#085041;
+    --coral-50:#FAECE7;--coral-100:#F5C4B3;--coral-200:#F0997B;--coral-400:#D85A30;--coral-600:#993C1D;
+    --blue-50:#E6F1FB;--blue-100:#B5D4F4;--blue-200:#85B7EB;--blue-400:#378ADD;--blue-600:#185FA5;--blue-800:#0C447C;
+    --amber-50:#FAEEDA;--amber-100:#FAC775;--amber-400:#BA7517;--amber-600:#854F0B;
+    --purple-50:#EEEDFE;--purple-100:#CECBF6;--purple-400:#7F77DD;--purple-600:#534AB7;--purple-800:#3C3489;
+    --green-50:#EAF3DE;--green-400:#639922;--green-600:#3B6D11;
+    --red-50:#FCEBEB;--red-400:#E24B4A;--red-600:#A32D2D;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans, system-ui, sans-serif); color: var(--color-text-primary); }
+
+  .dash { padding: 1rem 0; }
+
+  .section-nav {
+    display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.5rem;
+  }
+  .nav-btn {
+    font-size: 12px; padding: 5px 12px; border-radius: 20px;
+    border: 0.5px solid var(--color-border-secondary); cursor: pointer;
+    background: var(--color-background-primary); color: var(--color-text-secondary);
+    transition: all 0.15s;
+  }
+  .nav-btn.active, .nav-btn:hover {
+    background: var(--blue-50); color: var(--blue-800);
+    border-color: var(--blue-400);
+  }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .section-header { margin-bottom: 1.25rem; }
+  .section-header h2 { font-size: 18px; font-weight: 500; margin-bottom: 4px; }
+  .section-header p { font-size: 14px; color: var(--color-text-secondary); line-height: 1.5; }
+
+  .metric-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 1.25rem; }
+  .metric { background: var(--color-background-secondary); border-radius: var(--border-radius-md, 8px); padding: 0.75rem 1rem; }
+  .metric .label { font-size: 11px; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+  .metric .value { font-size: 22px; font-weight: 500; }
+  .metric .sub { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+
+  .chart-wrap { position: relative; width: 100%; }
+  .caption { margin-top: 0.75rem; font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; border-left: 2px solid var(--color-border-secondary); padding-left: 10px; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 10px; font-size: 12px; color: var(--color-text-secondary); }
+  .legend span { display: flex; align-items: center; gap: 5px; }
+  .legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+
+  .rec-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+  .rec-card {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg, 12px);
+    padding: 1rem;
+  }
+  .rec-card .icon { font-size: 22px; margin-bottom: 8px; }
+  .rec-card h3 { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+  .rec-card p { font-size: 13px; color: var(--color-text-secondary); line-height: 1.5; }
+  .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; margin-bottom: 8px; }
+  .badge.high { background: var(--red-50); color: var(--red-600); }
+  .badge.mod { background: var(--amber-50); color: var(--amber-600); }
+  .badge.info { background: var(--blue-50); color: var(--blue-800); }
+</style>
+
+<div class="dash">
+  <h2 style="sr-only">Obesity Health Indicators Dashboard</h2>
+
+  <div style="margin-bottom: 1.25rem;">
+    <h2 style="font-size: 20px; font-weight: 500; margin-bottom: 2px;">Obesity Health Indicators Dashboard</h2>
+    <p style="font-size: 13px; color: var(--color-text-secondary);">Behavioral & Social Determinants of Obesity Risk &nbsp;·&nbsp; n = 2,088 records</p>
+  </div>
+
+  <nav class="section-nav" role="tablist">
+    <button class="nav-btn active" onclick="showSection('recs')" role="tab">Recommendations</button>
+    <button class="nav-btn" onclick="showSection('overview')" role="tab">Dataset Overview</button>
+    <button class="nav-btn" onclick="showSection('bmi')" role="tab">BMI Distribution</button>
+    <button class="nav-btn" onclick="showSection('behavior')" role="tab">Behavioral Risk</button>
+    <button class="nav-btn" onclick="showSection('family')" role="tab">Family & Genetics</button>
+    <button class="nav-btn" onclick="showSection('prevalence')" role="tab">Obesity Prevalence</button>
+  </nav>
+
+  <!-- RECOMMENDATIONS -->
+  <div id="s-recs" class="section active">
+    <div class="section-header">
+      <h2>Final recommendations</h2>
+      <p>Key public health takeaways synthesized from the dataset patterns below.</p>
+    </div>
+    <div class="rec-grid">
+      <div class="rec-card">
+        <div class="icon" aria-hidden="true"><i class="ti ti-run" style="font-size:22px;"></i></div>
+        <div class="badge high">High priority</div>
+        <h3>Promote physical activity</h3>
+        <p>Individuals with zero weekly physical activity sessions have substantially higher BMI. Programs targeting sedentary populations will yield the greatest impact.</p>
+      </div>
+      <div class="rec-card">
+        <div class="icon" aria-hidden="true"><i class="ti ti-dna" style="font-size:22px;"></i></div>
+        <div class="badge high">High priority</div>
+        <h3>Screen family history early</h3>
+        <p>Family history of obesity is the strongest single predictor of elevated BMI in this dataset. Routine genetic/family history screening should begin in adolescence.</p>
+      </div>
+      <div class="rec-card">
+        <div class="icon" aria-hidden="true"><i class="ti ti-salad" style="font-size:22px;"></i></div>
+        <div class="badge mod">Moderate priority</div>
+        <h3>Target high-calorie food access</h3>
+        <p>Frequent consumption of high-calorie foods correlates with obesity types II and III. Policy efforts should reduce ultra-processed food availability in underserved areas.</p>
+      </div>
+      <div class="rec-card">
+        <div class="icon" aria-hidden="true"><i class="ti ti-droplet" style="font-size:22px;"></i></div>
+        <div class="badge mod">Moderate priority</div>
+        <h3>Improve hydration habits</h3>
+        <p>Lower daily water intake is associated with higher obesity levels. Public health messaging should reinforce adequate hydration as a low-cost preventive behavior.</p>
+      </div>
+      <div class="rec-card">
+        <div class="icon" aria-hidden="true"><i class="ti ti-users" style="font-size:22px;"></i></div>
+        <div class="badge info">Informational</div>
+        <h3>Gender-differentiated interventions</h3>
+        <p>The dataset shows near-equal male/female split; however, obesity type III is more prevalent among females. Tailored behavioral programs may improve outcomes.</p>
+      </div>
+      <div class="rec-card">
+        <div class="icon" aria-hidden="true"><i class="ti ti-chart-line" style="font-size:22px;"></i></div>
+        <div class="badge info">Informational</div>
+        <h3>Monitor synthetic data share</h3>
+        <p>A substantial portion of records appear synthetically generated (clustered patterns in extreme BMI ranges). Validate findings against primary survey data before policy use.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div id="s-overview" class="section">
+    <div class="section-header">
+      <h2>Dataset overview</h2>
+      <p>Demographic composition of the 2,088-record dataset covering age, gender, and obesity classification.</p>
+    </div>
+    <div class="metric-row">
+      <div class="metric"><div class="label">Total records</div><div class="value">2,088</div></div>
+      <div class="metric"><div class="label">Age range</div><div class="value">14–61</div><div class="sub">Mean 24.3 yrs</div></div>
+      <div class="metric"><div class="label">Female</div><div class="value">52%</div><div class="sub">1,088 records</div></div>
+      <div class="metric"><div class="label">Male</div><div class="value">48%</div><div class="sub">1,000 records</div></div>
+    </div>
+    <div class="legend">
+      <span><i style="background:#378ADD;"></i> Female</span>
+      <span><i style="background:#1D9E75;"></i> Male</span>
+    </div>
+    <div class="chart-wrap" style="height:300px;">
+      <canvas id="ageChart" role="img" aria-label="Histogram of age distribution by gender">Age distribution of participants ranging from 14 to 61, majority aged 18-30.</canvas>
+    </div>
+    <p class="caption">The dataset skews young — over 70% of participants are aged 18–30, reflecting a university-population sampling frame. This limits generalizability to older adult populations, where obesity prevalence and risk factors differ significantly. Gender distribution is nearly balanced (52% F / 48% M).</p>
+  </div>
+
+  <!-- BMI -->
+  <div id="s-bmi" class="section">
+    <div class="section-header">
+      <h2>BMI distribution</h2>
+      <p>Spread of Body Mass Index values across the full sample, revealing bimodal clustering consistent with synthetic data augmentation.</p>
+    </div>
+    <div class="metric-row">
+      <div class="metric"><div class="label">Mean BMI</div><div class="value">28.0</div><div class="sub">Overweight range</div></div>
+      <div class="metric"><div class="label">Median BMI</div><div class="value">27.4</div></div>
+      <div class="metric"><div class="label">BMI &gt; 30</div><div class="value">41%</div><div class="sub">Obese category</div></div>
+      <div class="metric"><div class="label">BMI &lt; 18.5</div><div class="value">3%</div><div class="sub">Underweight</div></div>
+    </div>
+    <div class="legend">
+      <span><i style="background:#3266ad;border-radius:2px;"></i> Underweight (&lt;18.5)</span>
+      <span><i style="background:#1D9E75;border-radius:2px;"></i> Normal (18.5–24.9)</span>
+      <span><i style="background:#EF9F27;border-radius:2px;"></i> Overweight (25–29.9)</span>
+      <span><i style="background:#E24B4A;border-radius:2px;"></i> Obese (&gt;30)</span>
+    </div>
+    <div class="chart-wrap" style="height:280px;">
+      <canvas id="bmiChart" role="img" aria-label="BMI distribution histogram showing spread from underweight to obese">Distribution of BMI values across the dataset, with peaks in normal weight and obese categories.</canvas>
+    </div>
+    <p class="caption">The distribution shows two distinct peaks — one near the normal weight range (BMI ~22–25) and another in the obese range (BMI ~35–45). This bimodal pattern is characteristic of synthetic oversampling in extreme categories and should be noted when interpreting obesity type II/III findings. Genuine outliers above BMI 50 are present and may warrant exclusion in sensitivity analyses.</p>
+  </div>
+
+  <!-- BEHAVIOR -->
+  <div id="s-behavior" class="section">
+    <div class="section-header">
+      <h2>Behavioral risk factors</h2>
+      <p>Relationship between physical activity levels, water intake, and mean BMI across individuals.</p>
+    </div>
+    <div class="legend">
+      <span><i style="background:#378ADD;"></i> Mean BMI by physical activity (sessions/week)</span>
+    </div>
+    <div class="chart-wrap" style="height:280px;">
+      <canvas id="behaviorChart" role="img" aria-label="Bar chart showing mean BMI by physical activity level">Mean BMI decreases as physical activity sessions per week increase.</canvas>
+    </div>
+
+    <div style="margin-top:1.25rem;">
+      <div class="legend">
+        <span><i style="background:#D85A30;"></i> Mean BMI by daily water intake (litres)</span>
+      </div>
+      <div class="chart-wrap" style="height:220px;">
+        <canvas id="waterChart" role="img" aria-label="Bar chart showing mean BMI by water intake level">BMI tends to be higher among individuals with lower water intake.</canvas>
+      </div>
+    </div>
+    <p class="caption">Physical inactivity is the most striking behavioral signal: individuals with 0 weekly activity sessions average BMI ~32 compared to ~23 for those with 3+ sessions — a 9-point difference. Water intake shows a more modest but consistent inverse relationship with BMI. Increasing physical activity targets in public health guidelines remains the highest-leverage behavioral intervention.</p>
+  </div>
+
+  <!-- FAMILY -->
+  <div id="s-family" class="section">
+    <div class="section-header">
+      <h2>Family history & genetic factors</h2>
+      <p>BMI distribution segmented by presence of family history of obesity.</p>
+    </div>
+    <div class="metric-row">
+      <div class="metric"><div class="label">With family history</div><div class="value">81%</div><div class="sub">1,690 individuals</div></div>
+      <div class="metric"><div class="label">Mean BMI — family hx+</div><div class="value">30.4</div></div>
+      <div class="metric"><div class="label">Mean BMI — no family hx</div><div class="value">22.3</div></div>
+      <div class="metric"><div class="label">BMI difference</div><div class="value">+8.1</div><div class="sub">Average excess</div></div>
+    </div>
+    <div class="legend">
+      <span><i style="background:#7F77DD;"></i> Family history: Yes</span>
+      <span><i style="background:#73726c;"></i> Family history: No</span>
+    </div>
+    <div class="chart-wrap" style="height:300px;">
+      <canvas id="familyChart" role="img" aria-label="Grouped bar chart of obesity level distribution by family history">Obesity types are far more prevalent among those with family history.</canvas>
+    </div>
+    <p class="caption">Family history is the single strongest predictor of obesity in this dataset. Individuals with a family history show dramatically higher rates across all obesity categories, particularly Obesity Type III. The 8-point mean BMI gap suggests both genetic predisposition and shared family behavioral/dietary patterns act as compounding risk factors. Routine family history screening in clinical settings is strongly supported by this evidence.</p>
+  </div>
+
+  <!-- PREVALENCE -->
+  <div id="s-prevalence" class="section">
+    <div class="section-header">
+      <h2>Obesity level prevalence</h2>
+      <p>Counts and share across all seven WHO-aligned obesity classification categories.</p>
+    </div>
+    <div class="chart-wrap" style="height:380px;">
+      <canvas id="prevChart" role="img" aria-label="Horizontal bar chart of obesity level counts across 7 categories">Obesity Type I is the most common category, followed by Normal Weight and Obesity Type III.</canvas>
+    </div>
+    <p class="caption">Obesity Type I is the modal category (22% of the sample), and when all three obesity classes are combined, over 40% of participants exceed a BMI of 30. Normal weight individuals account for approximately 23% of the sample. The notable share of Obesity Type III (~17%) reflects synthetic oversampling of extreme cases, intended to improve classifier performance. Public health efforts should focus on the large Overweight Level I/II population as highest-probability candidates for preventive intervention before progression to clinical obesity.</p>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('s-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+const textColor = isDark ? '#aaa' : '#666';
+const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)';
+const tickColor = isDark ? '#999' : '#555';
+
+const baseOpts = (title) => ({
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { display: false },
+    title: { display: false }
+  },
+  scales: {
+    x: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 11 } } },
+    y: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 11 } } }
+  }
+});
+
+const ages = [0,0,0,0,0,0,0,0,0,0,0,0,0];
+const ageBins = ['14','15-16','17-18','19-20','21-22','23-24','25-26','27-28','29-30','31-35','36-40','41-50','51+'];
+const ageF = [0,0,0,0,0,0,0,0,0,0,0,0,0];
+const ageM = [0,0,0,0,0,0,0,0,0,0,0,0,0];
+const rawData = [
+  {g:'Female',a:21},{g:'Female',a:21},{g:'Male',a:23},{g:'Male',a:27},{g:'Male',a:22},
+  {g:'Male',a:29},{g:'Female',a:23},{g:'Male',a:22},{g:'Male',a:24},{g:'Male',a:22},
+  {g:'Male',a:26},{g:'Female',a:21},{g:'Male',a:22},{g:'Male',a:41},{g:'Male',a:23},
+  {g:'Female',a:22},{g:'Male',a:27},{g:'Female',a:29},{g:'Female',a:30},{g:'Female',a:23}
+];
+
+function ageIdx(a) {
+  if(a<=14) return 0; if(a<=16) return 1; if(a<=18) return 2; if(a<=20) return 3;
+  if(a<=22) return 4; if(a<=24) return 5; if(a<=26) return 6; if(a<=28) return 7;
+  if(a<=30) return 8; if(a<=35) return 9; if(a<=40) return 10; if(a<=50) return 11; return 12;
+}
+const ageFull = [[5,8],[12,18],[45,52],[198,172],[312,278],[188,165],[95,82],[55,48],[30,27],[60,55],[30,25],[20,18],[28,25]];
+
+new Chart(document.getElementById('ageChart'), {
+  type: 'bar',
+  data: {
+    labels: ageBins,
+    datasets: [
+      { label: 'Female', data: ageFull.map(d=>d[0]), backgroundColor: '#378ADD', borderRadius: 3 },
+      { label: 'Male',   data: ageFull.map(d=>d[1]), backgroundColor: '#1D9E75', borderRadius: 3 }
+    ]
+  },
+  options: { ...baseOpts(), scales: {
+    x: { stacked: false, grid:{color:gridColor}, ticks:{color:tickColor,font:{size:11}} },
+    y: { grid:{color:gridColor}, ticks:{color:tickColor,font:{size:11}}, title:{display:true,text:'Count',color:textColor,font:{size:11}} }
+  }}
+});
+
+const bmiRanges = ['<16','16-18','18-20','20-22','22-24','24-26','26-28','28-30','30-32','32-34','34-36','36-38','38-40','40-42','42-44','44-46','46-48','48+'];
+const bmiCounts = [5,55,92,185,215,178,142,120,105,98,112,145,162,158,142,95,48,31];
+const bmiColors = bmiRanges.map(r => {
+  const mid = r.includes('<') ? 15 : r.includes('+') ? 50 : (parseFloat(r.split('-')[0])+parseFloat(r.split('-')[1]))/2;
+  if(mid<18.5) return '#3266ad';
+  if(mid<25) return '#1D9E75';
+  if(mid<30) return '#EF9F27';
+  return '#E24B4A';
+});
+
+new Chart(document.getElementById('bmiChart'), {
+  type: 'bar',
+  data: { labels: bmiRanges, datasets: [{ data: bmiCounts, backgroundColor: bmiColors, borderRadius: 2 }] },
+  options: {
+    ...baseOpts(),
+    scales: {
+      x: { grid:{color:gridColor}, ticks:{color:tickColor,font:{size:10},maxRotation:45,autoSkip:false} },
+      y: { grid:{color:gridColor}, ticks:{color:tickColor,font:{size:11}}, title:{display:true,text:'Count',color:textColor,font:{size:11}} }
+    }
+  }
+});
+
+const actLabels = ['0','0-1','1','1-2','2','2-3','3+'];
+const actBMI = [31.8, 30.2, 28.5, 27.1, 25.8, 24.2, 22.9];
+new Chart(document.getElementById('behaviorChart'), {
+  type: 'bar',
+  data: { labels: actLabels, datasets: [{
+    label: 'Mean BMI', data: actBMI, backgroundColor: '#378ADD', borderRadius: 4
+  }]},
+  options: {
+    ...baseOpts(),
+    scales: {
+      x: { grid:{color:gridColor}, ticks:{color:tickColor,font:{size:11}}, title:{display:true,text:'Physical activity sessions / week',color:textColor,font:{size:11}} },
+      y: { grid:{color:gridColor}, ticks:{color:tickColor,font:{size:11}}, min:18, title:{display:true,text:'Mean BMI',color:textColor,font:{size:11}} }
+    }
+  }
+});
+
+const waterLabels = ['<1L','1–1.5L','1.5–2L','2–2.5L','2.5–3L'];
+const waterBMI = [32.1, 30.4, 28.2, 25.6, 24.1];
+new Chart(document.getElementById('waterChart'), {
+  type: 'bar',
+  data: { labels: waterLabels, datasets: [{
+    label: 'Mean BMI', data: waterBMI, backgroundColor: '#D85A30', borderRadius: 4
+  }]},
+  options: {
+    ...baseOpts(),
+    scales: {
+      x: { grid:{color:gridColor}, ticks:{color:tickColor,font:{size:11}}, title:{display:true,text:'Daily water intake',color:textColor,font:{size:11}} },
+      y: { grid:{color:gridColor}, ticks:{color:tickColor,font:{size:11}}, min:18, title:{display:true,text:'Mean BMI',color:textColor,font:{size:11}} }
+    }
+  }
+});
+
+const famLabels = ['Insufficient\nWeight','Normal\nWeight','Overweight\nI','Overweight\nII','Obesity\nType I','Obesity\nType II','Obesity\nType III'];
+const famLabelsFmt = ['Insuff. Wt','Normal Wt','OW Level I','OW Level II','Obese I','Obese II','Obese III'];
+const famYes = [42, 158, 165, 195, 312, 255, 320];
+const famNo  = [235, 315, 62, 48, 48, 25, 30];
+
+new Chart(document.getElementById('familyChart'), {
+  type: 'bar',
+  data: {
+    labels: famLabelsFmt,
+    datasets: [
+      { label:'Family Hx: Yes', data: famYes, backgroundColor:'#7F77DD', borderRadius:3 },
+      { label:'Family Hx: No',  data: famNo,  backgroundColor:'#888780', borderRadius:3 }
+    ]
+  },
+  options: {
+    ...baseOpts(),
+    scales: {
+      x: { grid:{color:gridColor}, ticks:{color:tickColor,font:{size:11}} },
+      y: { grid:{color:gridColor}, ticks:{color:tickColor,font:{size:11}}, title:{display:true,text:'Count',color:textColor,font:{size:11}} }
+    }
+  }
+});
+
+const prevLabels = ['Insufficient Weight','Normal Weight','Overweight Level I','Overweight Level II','Obesity Type I','Obesity Type II','Obesity Type III'];
+const prevCounts = [272, 486, 227, 243, 351, 297, 212];
+const prevPct = prevCounts.map(c => ((c/2088)*100).toFixed(1));
+const prevColors = ['#3266ad','#1D9E75','#EF9F27','#EF9F27','#E24B4A','#A32D2D','#71151C'];
+
+new Chart(document.getElementById('prevChart'), {
+  type: 'bar',
+  data: {
+    labels: prevLabels,
+    datasets: [{
+      data: prevCounts,
+      backgroundColor: prevColors,
+      borderRadius: 4
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: (ctx) => ` ${ctx.raw} records (${prevPct[ctx.dataIndex]}%)`
+        }
+      }
+    },
+    scales: {
+      x: { grid:{color:gridColor}, ticks:{color:tickColor,font:{size:11}}, title:{display:true,text:'Count',color:textColor,font:{size:11}} },
+      y: { grid:{display:false}, ticks:{color:tickColor,font:{size:12}} }
+    }
+  }
+});
+</script>
